@@ -27,5 +27,6 @@ WATCHDOG_SHA=c796e1b714d703c90bf6e3f392471746e0aeab2d
 
 		patch -p1 < ../../gateway.patch
 		patch -p1 < ../../of-watchdog.patch
+		patch -p1 < ../../build.patch
 	)
 )
