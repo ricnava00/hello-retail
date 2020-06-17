@@ -1,0 +1,65 @@
+diff --git a/gateway/Dockerfile b/gateway/Dockerfile
+index c902d8b5..bad955d7 100644
+--- a/gateway/Dockerfile
++++ b/gateway/Dockerfile
+@@ -18,6 +18,7 @@ WORKDIR /go/src/github.com/openfaas/faas/gateway
+ 
+ COPY vendor         vendor
+ 
++COPY accesscontrol  accesscontrol
+ COPY handlers       handlers
+ COPY metrics        metrics
+ COPY requests       requests
+@@ -65,7 +66,8 @@ ENV http_proxy      ""
+ ENV https_proxy     ""
+ 
+ COPY --from=build /go/src/github.com/openfaas/faas/gateway/gateway    .
+-COPY assets     assets
++COPY assets       assets
++COPY config.json  .
+ RUN sed -ie s/x86_64/${ARCH}/g assets/script/funcstore.js && \
+   rm assets/script/funcstore.jse
+ 
+diff --git a/gateway/build.sh b/gateway/build.sh
+index 76e5dbf5..ea422163 100755
+--- a/gateway/build.sh
++++ b/gateway/build.sh
+@@ -42,9 +42,17 @@ GIT_COMMIT_MESSAGE=$(git log -1 --pretty=%B 2>&1 | head -n 1)
+ GIT_COMMIT_SHA=$(git rev-list -1 HEAD)
+ VERSION=$(git describe --all --exact-match `git rev-parse HEAD` | grep tags | sed 's/tags\///' || echo dev)
+ 
++cp -R ../accesscontrol/ ./accesscontrol/
++cp ../config.json ./config.json
++
++rm ./accesscontrol/*_ofwatchdog.go
++
+ docker build --build-arg https_proxy=$https_proxy --build-arg http_proxy=$http_proxy \
+   --build-arg GIT_COMMIT_MESSAGE="${GIT_COMMIT_MESSAGE}" --build-arg GIT_COMMIT_SHA="${GIT_COMMIT_SHA}" \
+   --build-arg VERSION="${VERSION:-dev}" \
+   --build-arg GOARM="${GOARM}" \
+   --build-arg ARCH="${arch}" \
+   -t $NS/gateway:$eTAG . -f $dockerfile
++
++rm -rf ./accesscontrol/
++rm config.json
+diff --git a/gateway/main.go b/gateway/main.go
+index 2be7a11d..e19e8c9a 100644
+--- a/gateway/main.go
++++ b/gateway/main.go
+@@ -11,6 +11,7 @@ import (
+ 
+ 	"github.com/gorilla/mux"
+ 	"github.com/openfaas/faas-provider/auth"
++	"github.com/openfaas/faas/gateway/accesscontrol"
+ 	"github.com/openfaas/faas/gateway/handlers"
+ 	"github.com/openfaas/faas/gateway/metrics"
+ 	"github.com/openfaas/faas/gateway/pkg/middleware"
+@@ -207,6 +208,8 @@ func main() {
+ 			decorateExternalAuth(faasHandlers.NamespaceListerHandler, config.UpstreamTimeout, config.AuthProxyURL, config.AuthProxyPassBody)
+ 	}
+ 
++	functionProxy = accesscontrol.Wrap(functionProxy)
++
+ 	r := mux.NewRouter()
+ 	// max wait time to start a function = maxPollCount * functionPollInterval
+ 
