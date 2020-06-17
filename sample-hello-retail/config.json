@@ -1,0 +1,264 @@
+{
+	"functions": {
+		"eulersum": {
+			"permissions": [],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-catalog-api": {
+			"permissions": [
+				{
+					"dataType": "productCategory",
+					"operation": "read"
+				},
+				{
+					"dataType": "productCatalog",
+					"operation": "read"
+				},
+				{
+					"dataType": "productPrice",
+					"operation": "read"
+				}
+			],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-catalog-builder": {
+			"permissions": [
+				{
+					"dataType": "productCategory",
+					"operation": "write"
+				},
+				{
+					"dataType": "productCatalog",
+					"operation": "write"
+				},
+				{
+					"dataType": "productPrice",
+					"operation": "write"
+				}
+			],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-purchase-authenticate": {
+			"permissions": [],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-purchase-get-price": {
+			"permissions": [
+				{
+					"dataType": "productPrice",
+					"operation": "read"
+				}
+			],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-purchase-authorize-cc": {
+			"permissions": [
+				{
+					"dataType": "creditCardsName",
+					"operation": "read"
+				}
+			],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-purchase-publish": {
+			"permissions": [],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-photos-assign": {
+			"permissions": [
+				{
+					"dataType": "photoRegistrationTable",
+					"operation": "write"
+				}
+			],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-photos-message": {
+			"permissions": [],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-photos-record": {
+			"permissions": [
+				{
+					"dataType": "photoAssignmentTable",
+					"operation": "write"
+				}
+			],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-photos-receive": {
+			"permissions": [
+				{
+					"dataType": "photoAssignmentTable",
+					"operation": "read"
+				},
+				{
+					"dataType": "storedPhotosTable",
+					"operation": "write"
+				}
+			],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-photos-success": {
+			"permissions": [],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-photos-report": {
+			"permissions": [
+				{
+					"dataType": "photoRegistrationTable",
+					"operation": "read"
+				},
+				{
+					"dataType": "photoRegistrationTable",
+					"operation": "write"
+				},
+				{
+					"dataType": "photoAssignmentTable",
+					"operation": "write"
+				}
+			],
+			"absoluteDependencies": [],
+			"conditionalDependencies": []
+		},
+		"product-photos": {
+			"permissions": [],
+			"absoluteDependencies": [],
+			"conditionalDependencies": [
+				"product-photos-assign",
+				"product-photos-message",
+				"product-photos-record",
+				"product-photos-receive",
+				"product-photos-success",
+				"product-photos-report"
+			]
+		},
+		"product-purchase": {
+			"permissions": [],
+			"absoluteDependencies": [
+				"product-purchase-get-price",
+				"product-purchase-authorize-cc",
+				"product-purchase-publish"
+			],
+			"conditionalDependencies": []
+		}
+	},
+	"policies": {
+		"": {
+			"dependencies": [],
+			"permissions": [
+				{
+					"dataType": "productCategory",
+					"operation": "read"
+				},
+				{
+					"dataType": "productCatalog",
+					"operation": "read"
+				},
+				{
+					"dataType": "productPrice",
+					"operation": "read"
+				}
+			]
+		},
+		"inventory-manager": {
+			"dependencies": [
+				""
+			],
+			"permissions": [
+				{
+					"dataType": "productCategory",
+					"operation": "write"
+				},
+				{
+					"dataType": "productCatalog",
+					"operation": "write"
+				},
+				{
+					"dataType": "productPrice",
+					"operation": "write"
+				}
+			]
+		},
+		"customer": {
+			"dependencies": [
+				""
+			],
+			"permissions": [
+				{
+					"dataType": "creditCardsName",
+					"operation": "read"
+				}
+			]
+		},
+		"photographer": {
+			"dependencies": [
+				""
+			],
+			"permissions": [
+				{
+					"dataType": "photoAssignmentTable",
+					"operation": "read"
+				},
+				{
+					"dataType": "storedPhotosTable",
+					"operation": "write"
+				},
+				{
+					"dataType": "photoRegistrationTable",
+					"operation": "read"
+				},
+				{
+					"dataType": "photoRegistrationTable",
+					"operation": "write"
+				},
+				{
+					"dataType": "photoAssignmentTable",
+					"operation": "write"
+				}
+			]
+		},
+		"photo-manager": {
+			"dependencies": [
+				""
+			],
+			"permissions": [
+				{
+					"dataType": "photoRegistrationTable",
+					"operation": "write"
+				},
+				{
+					"dataType": "photoAssignmentTable",
+					"operation": "write"
+				}
+			]
+		},
+		"director": {
+			"dependencies": [
+				"inventory-manager",
+				"photo-manager"
+			],
+			"permissions": []
+		},
+		"admin": {
+			"dependencies": [
+				"director",
+				"customer",
+				"photographer"
+			],
+			"permissions": []
+		}
+	}
+}

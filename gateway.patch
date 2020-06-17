@@ -29,7 +29,7 @@ index 76e5dbf5..ea422163 100755
  VERSION=$(git describe --all --exact-match `git rev-parse HEAD` | grep tags | sed 's/tags\///' || echo dev)
  
 +cp -R ../accesscontrol/ ./accesscontrol/
-+cp ../config.json ./config.json
++cp ../sample-hello-retail/config.json ./config.json
 +
 +rm ./accesscontrol/*_ofwatchdog.go
 +
