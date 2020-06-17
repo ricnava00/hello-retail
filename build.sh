@@ -1,13 +1,12 @@
 #! /bin/bash
+
 FAAS_SHA=3e4762e025c570fe66d549af243800c79cd3630e
 WATCHDOG_SHA=c796e1b714d703c90bf6e3f392471746e0aeab2d
 
 (
 	rm -rf build/
 	mkdir -p build/
-)
-
-(
+	
 	cd build/
 
 	wget https://github.com/openfaas/faas/archive/${FAAS_SHA}.zip
