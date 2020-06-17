@@ -31,4 +31,5 @@ WATCHDOG_SHA=c796e1b714d703c90bf6e3f392471746e0aeab2d
 	)
 
 	cp -R ../accesscontrol/ faas/accesscontrol/
+	cp -R ../sample-hello-retail/ faas/sample-hello-retail/
 )

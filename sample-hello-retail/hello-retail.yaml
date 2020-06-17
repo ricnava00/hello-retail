@@ -1,0 +1,152 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://127.0.0.1:8080
+functions:
+  product-catalog-api:
+    lang: dockerfile
+    handler: ./product-catalog-api
+    image: openfaasaccesscontrol/product-catalog-api:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_PRODUCT_CATEGORY_NAME: 'productCategory'
+      TABLE_PRODUCT_CATALOG_NAME: 'productCatalog'
+      TABLE_PRODUCT_PRICE_NAME: 'productPrice'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-catalog-builder:
+    lang: dockerfile
+    handler: ./product-catalog-builder
+    image: openfaasaccesscontrol/product-catalog-builder:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_PRODUCT_CATEGORY_NAME: 'productCategory'
+      TABLE_PRODUCT_CATALOG_NAME: 'productCatalog'
+      TABLE_PRODUCT_PRICE_NAME: 'productPrice'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-photos-assign:
+    lang: dockerfile
+    handler: ./product-photos-assign
+    image: openfaasaccesscontrol/product-photos-assign:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_PHOTO_REGISTRATIONS_NAME: 'photoRegistrationTable'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-photos-message:
+    lang: dockerfile
+    handler: ./product-photos-message
+    image: openfaasaccesscontrol/product-photos-message:latest-accesscontrol
+    skip_build: true
+  product-photos-record:
+    lang: dockerfile
+    handler: ./product-photos-record
+    image: openfaasaccesscontrol/product-photos-record:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_PHOTO_ASSIGNMENTS_NAME: 'photoAssignmentTable'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-photos-receive:
+    lang: dockerfile
+    handler: ./product-photos-receive
+    image: openfaasaccesscontrol/product-photos-receive:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_PHOTO_ASSIGNMENTS_NAME: 'photoAssignmentTable'
+      TABLE_STORED_PHOTOS_NAME: 'storedPhotosTable'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-photos-success:
+    lang: dockerfile
+    handler: ./product-photos-success
+    image: openfaasaccesscontrol/product-photos-success:latest-accesscontrol
+    skip_build: true
+  product-photos-report:
+    lang: dockerfile
+    handler: ./product-photos-report
+    image: openfaasaccesscontrol/product-photos-report:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_PHOTO_ASSIGNMENTS_NAME: 'photoAssignmentTable'
+      TABLE_PHOTO_REGISTRATIONS_NAME: 'photoRegistrationTable'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-purchase-authenticate:
+    lang: dockerfile
+    handler: ./product-purchase-authenticate
+    image: openfaasaccesscontrol/product-purchase-authenticate:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_AUTHENTICATION_NAME: 'authenticationName'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-purchase-get-price:
+    lang: dockerfile
+    handler: ./product-purchase-get-price
+    image: openfaasaccesscontrol/product-purchase-get-price:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_PRODUCT_PRICE_NAME: 'productPrice'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-purchase-authorize-cc:
+    lang: dockerfile
+    handler: ./product-purchase-authorize-cc
+    image: openfaasaccesscontrol/product-purchase-authorize-cc:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_CREDIT_CARDS_NAME: 'creditCardsName'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-purchase-publish:
+    lang: dockerfile
+    handler: ./product-purchase-publish
+    image: openfaasaccesscontrol/product-purchase-publish:latest-accesscontrol
+    skip_build: true
+    environment:
+      DBNAME: 'helloRetail'
+      TABLE_CREDIT_CARDS_NAME: 'creditCardsName'
+      HOST: 'mysql'
+      USER: 'root'
+      PASS: 'pass'
+  product-photos:
+    lang: dockerfile
+    handler: ./product-photos
+    image: openfaasaccesscontrol/product-photos:latest-accesscontrol
+    skip_build: true
+    environment:
+      URL_ASSIGN: 'http://127.0.0.1:8082/function/product-photos-assign'
+      URL_MESSAGE: 'http://127.0.0.1:8082/function/product-photos-message'
+      URL_RECORD: 'http://127.0.0.1:8082/function/product-photos-record'
+      URL_RECEIVE: 'http://127.0.0.1:8082/function/product-photos-receive'
+      URL_SUCCESS: 'http://127.0.0.1:8082/function/product-photos-success'
+      URL_REPORT: 'http://127.0.0.1:8082/function/product-photos-report'
+  product-purchase:
+    lang: dockerfile
+    handler: ./product-purchase
+    image: openfaasaccesscontrol/product-purchase:latest-accesscontrol
+    skip_build: true
+    environment:
+      URL_GETPRICE: 'http://127.0.0.1:8082/function/product-purchase-get-price'
+      URL_AUTHORIZECC: 'http://127.0.0.1:8082/function/product-purchase-authorize-cc'
+      URL_PUBLISH: 'http://127.0.0.1:8082/function/product-purchase-publish'
