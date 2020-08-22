@@ -15,3 +15,6 @@ In order to deploy the platform and sample application you will need a `kubectl`
 
 ### Teardown Process
 Once finished with running the deployment, you can fully cleanup the platform and sample application by running `./teardown.sh`.
+
+### Benchmarking with Hello Retail!
+The benchmarks for analyzing build, orchestration, and runtime performance of WILL.IAM are including under `sample-hello-retail/benchmarks/`. These benchmarks are written to be used with the sample Hello Retail! application as specified in the paper. There are a few dependencies which must be installed in order to utilize all of the benchmarking scripts. These dependencies include `ab` (ApacheBench), `multitime`, `requests` for python 3, and `docker`.
