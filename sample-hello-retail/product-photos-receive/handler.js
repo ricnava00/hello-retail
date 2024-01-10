@@ -27,7 +27,7 @@ const receiveRequestSchemaId = makeSchemaId(receiveRequestSchema);
 const photoAssignmentSchemaId = makeSchemaId(photoAssignmentSchema);
 
 
-const ajv = new AJV();
+const ajv = new AJV({strictSchema: false});
 ajv.addSchema(receiveRequestSchema, receiveRequestSchemaId);
 ajv.addSchema(photoAssignmentSchema, photoAssignmentSchemaId);
 
@@ -171,7 +171,7 @@ const impl = {
       .then(res => kv.close().then(() => res))
       .then((res) => {
         const parsedRes = JSON.parse(res);
-        parsedRes.id = resultsData.From;
+        parsedRes.id = parsedRes.taskEvent;
         return parsedRes;
       })
       .catch(err => BbPromise.reject(err));
@@ -246,23 +246,23 @@ module.exports = (event, context, callback) => {
       })
       .catch(ClientError, (ex) => {
         console.log(`${constants.MODULE} - ${ex.stack}`);
-        callback(null, `${ex.name}: ${ex.message}`)
+        callback(`${ex.name}: ${ex.message}`)
       })
       .catch(AuthError, (ex) => {
         console.log(`${constants.MODULE} - ${ex.stack}`);
-        callback(null, constants.ERROR_UNAUTHORIZED)
+        callback(constants.ERROR_UNAUTHORIZED)
       })
       .catch(UserError, (ex) => {
         console.log(`${constants.MODULE} - ${ex.stack}`);
-        callback(null, ex.message)
+        callback(ex.message)
       })
       .catch(ServerError, (ex) => {
         console.log(`${constants.MODULE} - ${ex.stack}`);
-        callback(null, ex.name)
+        callback(ex.name)
       })
       .catch((ex) => {
         console.log(`${constants.MODULE} - Uncaught exception: ${ex.stack}`);
-        callback(null, constants.ERROR_SERVER)
+        callback(constants.ERROR_SERVER)
       })
   }
 

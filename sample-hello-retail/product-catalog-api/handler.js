@@ -87,7 +87,7 @@ const api = {
       kv.init()
         .then(() => kv.keys())
         .then(result => kv.close().then(() => result))
-        .then(result => callback(  impl.success(result)))
+        .then(result => callback(null, impl.success(result)))
         .catch(err => callback( err));
     
   },

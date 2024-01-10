@@ -90,19 +90,20 @@ const impl = {
       .then(() => kv.get(event.body.photographer.id))
       .then((res) => {
         console.log(JSON.parse(res))
-        console.log(`%% res.assignment: ${res.assignment}`);
-        console.log(`%% event.body.data.id: ${event.body.data.id.toString()}`);
-        console.log(`%% res.assignment === event.data.id: ${res.assignment === event.body.data.id.toString()}`);
         res = JSON.parse(res) 
-        if (res.assignment === event.body.data.id.toString()) {
+        console.log(`%% res.assignment: ${res.assignment}`);
+	//I have no idea when or where this changed, but in all the previous functions the assignment is based only on the photographer number, with no additional id.
+        /*console.log(`%% event.body.data.id: ${event.body.data.id.toString()}`);
+        console.log(`%% res.assignment === event.data.id: ${res.assignment === event.body.data.id.toString()}`);
+        if (res.assignment === event.body.data.id.toString()) {*/
           res.assignments++;
           res.updated = updated;
           res.updatedBy = event.origin;
-          delete res.assignments;
+          delete res.assignment;
           return res;
-        } else {
+        /*} else {
           return kv.close().then(() => Promise.reject('Unexpected assignment for photographer.'));
-        }
+        }*/
       })
       .then(res => kv.put(
         event.body.photographer.id,
@@ -115,7 +116,7 @@ const impl = {
     const kv = new KV_Store(constants.HOST, constants.USER, 
         constants.PASS, constants.DBNAME, constants.TABLE_PHOTO_ASSIGNMENTS_NAME);
     kv.init()
-      .then(() => kv.del(event.body.photographer.id))
+      .then(() => kv.del(event.body.From))
       .then(() => kv.close())
       .then(() => callback())
       .catch(err => callback(err))

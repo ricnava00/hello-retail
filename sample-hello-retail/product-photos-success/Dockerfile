@@ -1,4 +1,4 @@
-FROM openfaas/of-watchdog:latest-dev-x86_64 as watchdog
+FROM ghcr.io/openfaas/of-watchdog:latest as watchdog
 
 FROM node:10.12.0-alpine
 

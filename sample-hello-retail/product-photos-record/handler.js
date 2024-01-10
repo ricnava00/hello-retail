@@ -7,7 +7,6 @@ const fs = require('fs');
 
 const constants = {
   MODULE: 'record.js',
-  METHOD_PUT_ASSIGNMENT: 'putToken',
 
   TABLE_PHOTO_ASSIGNMENTS_NAME: process.env.TABLE_PHOTO_ASSIGNMENTS_NAME,
   HOST: process.env.HOST,
@@ -35,19 +34,19 @@ const impl = {
     
     var storedValues = JSON.stringify({
           updatedBy: event.body.origin,
-          taskToken: event.body.data.tasks.taskToken,
-          taskEvent: event.body.data.photographer.id,
+          //taskToken: event.body.data.tasks.taskToken,
+          taskEvent: event.body.photographer.id,
           status: 'pending'
     })
     
     kv.init()
       .then(() => kv.put(
-        event.body.data.photographer.phone,
+        event.body.photographer.phone,
         storedValues
         ))
       .then(() => kv.close())
       .then(res => callback(null, res))
-      .catch(err => callback(null, err))
+      .catch(err => callback(err))
   },
 };
 
