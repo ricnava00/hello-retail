@@ -3,13 +3,18 @@ provider:
   name: openfaas
   gateway: http://127.0.0.1:8080
 functions:
+  init:
+    lang: dockerfile
+    handler: ./init
+    image: localhost:5001/init:latest
+    skip_build: true
   authenticate:
     lang: dockerfile
     handler: ./authenticate
     image: localhost:5001/authenticate:latest
     skip_build: true
     environment:
-      AUTHENTICATION_URL: 'https://www.googleapis.com/oauth2/v2/userinfo'
+      OAUTH_SERVER: 'accounts.google.com'
   product-catalog-api:
     lang: dockerfile
     handler: ./product-catalog-api

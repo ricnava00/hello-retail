@@ -36,19 +36,25 @@ const api = {
             .then(res => {
                 console.log('Assign result:');
                 console.log(res);
-                
-                /*request(functions.getRequestObject(res, constants.URL_MESSAGE, accessControlId), constants.URL_MESSAGE)
-                    .then(res => */
-                request(functions.getRequestObject(res, constants.URL_RECORD, accessControlId), constants.URL_RECORD)/*)*/
-                    .then(res => {
-                        console.log('Final res')
-                        console.log(res);
-                        callback(null, res);
-                    })
-                    .catch(err =>{
-                        console.log('err' + err)
-                        callback(null, err)
-                    });
+		if(res.assigned!='true')
+		{
+		    callback("Couldn't assign photographer")
+		}
+		else
+		{
+                    /*request(functions.getRequestObject(res, constants.URL_MESSAGE, accessControlId), constants.URL_MESSAGE)
+                        .then(res => */
+                    request(functions.getRequestObject(res, constants.URL_RECORD, accessControlId), constants.URL_RECORD)/*)*/
+                        .then(res => {
+                            console.log('Final res')
+                            console.log(res);
+                            callback(null, res);
+                        })
+                        .catch(err =>{
+                            console.log('err' + err)
+                            callback(null, err)
+                        });
+                }
                     
                 
                 
@@ -82,17 +88,17 @@ const api = {
                         })
                         .catch(err =>{
                             console.log('err' + err)
-                            callback(null, err)
+                            callback(err)
                         });
                 })
                 .catch(err =>{
                     console.log('err' + err)
-                    callback(null, err)
+                    callback(err)
                 });
             })
             .catch(err =>{
                 console.log('err' + err)
-                callback(null, err)
+                callback(err)
             });
     }
 }
