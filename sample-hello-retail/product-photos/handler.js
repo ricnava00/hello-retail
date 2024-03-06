@@ -32,8 +32,10 @@ const api = {
     receiveRequest: (event, context, callback) => {
        var accessControlId = event.headers['x-accesscontrolid']
        console.log(constants.URL_ASSIGN);
+        console.log("\u001b[93mCalling " + constants.URL_ASSIGN + " " + new Date().toISOString() + "\u001b[0m");
         request(functions.getRequestObject(event.body, constants.URL_ASSIGN, accessControlId), constants.URL_ASSIGN)
             .then(res => {
+                console.log("\u001b[93mDone " + new Date().toISOString() + "\u001b[0m");
                 console.log('Assign result:');
                 console.log(res);
 		if(res.assigned!='true')
@@ -44,8 +46,10 @@ const api = {
 		{
                     /*request(functions.getRequestObject(res, constants.URL_MESSAGE, accessControlId), constants.URL_MESSAGE)
                         .then(res => */
+                    console.log("\u001b[93mCalling " + constants.URL_RECORD + " " + new Date().toISOString() + "\u001b[0m");
                     request(functions.getRequestObject(res, constants.URL_RECORD, accessControlId), constants.URL_RECORD)/*)*/
                         .then(res => {
+                            console.log("\u001b[93mDone " + new Date().toISOString() + "\u001b[0m");
                             console.log('Final res')
                             console.log(res);
                             callback(null, res);
@@ -104,7 +108,12 @@ const api = {
 }
 
 module.exports = (event, context, callback) => {
-    console.log('abcd')
+   console.log("\u001b[36mRequest at " + new Date().toISOString() + "\u001b[0m\n\u001b[36m" + JSON.stringify(event,null,2).split("\n").join("\u001b[0m\n\u001b[36m") + "\u001b[0m");
+   const origCallback = callback;
+   callback = function(err, data) {
+     console.log("\u001b["+(err?"91":"36")+"mResponse at " + new Date().toISOString() + "\u001b[0m");
+     origCallback(err, data);
+   }
    if (event.path == '/request') {
       api.receiveRequest (event, context, callback);
     } else if (event.path == '/photos') {

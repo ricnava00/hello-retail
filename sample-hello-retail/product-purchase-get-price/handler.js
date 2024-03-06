@@ -14,7 +14,13 @@ const constants = {
 
 
 module.exports = (event, context, callback) => {
-  const kv = new KV_Store(constants.HOST, constants.USER, 
+  console.log("\u001b[36mRequest at " + new Date().toISOString() + "\u001b[0m\n\u001b[36m" + JSON.stringify(event,null,2).split("\n").join("\u001b[0m\n\u001b[36m") + "\u001b[0m");
+  const origCallback = callback;
+  callback = function(err, data) {
+    console.log("\u001b["+(err?"91":"36")+"mResponse at " + new Date().toISOString() + "\u001b[0m");
+    origCallback(err, data);
+  }
+  const kv = new KV_Store(constants.HOST, constants.USER,
     constants.PASS, constants.DBNAME, constants.TABLE_PRODUCT_PRICE_NAME);
 
   const result = event.body;

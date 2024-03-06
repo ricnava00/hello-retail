@@ -45,36 +45,36 @@ CREATE TABLE ${this.table} (
 );
             `;
 
-        console.log("** DEBUG: Call to init.");
+        console.log("** DEBUG "+new Date().toISOString()+": Call to init.");
         console.log('host: ' + this.con.host);
         return this.con.connectAsync()
-            .then(() => console.log("** DEBUG: K-V store connected successfully."))
+            .then(() => console.log("** DEBUG "+new Date().toISOString()+": K-V store connected successfully."))
             .then(() => this.con.queryAsync(showTablesSql, [this.table]))
             .then(
                 (result) => {
-                    console.log("** DEBUG: Query successful - getting list of tables in database.");
+                    console.log("** DEBUG "+new Date().toISOString()+": Query successful - getting list of tables in database.");
                     if (result.length === 0) {
-                        console.log("** DEBUG: No table in database. Calling query to create table.");
+                        console.log("** DEBUG "+new Date().toISOString()+": No table in database. Calling query to create table.");
                         return this.con.queryAsync(createTableSql)
-                            .then(() => console.log("** DEBUG: Query successful - creating table."));
+                            .then(() => console.log("** DEBUG "+new Date().toISOString()+": Query successful - creating table."));
                     } else {
-                        console.log("** DEBUG: table already exists in the database. No need to create it.");
+                        console.log("** DEBUG "+new Date().toISOString()+": table already exists in the database. No need to create it.");
                     }
                 })
             .catch(
                 (err) => {
-                    console.log("*** DEBUG: Failed in init " + err);
+                    console.log("*** DEBUG "+new Date().toISOString()+": Failed in init " + err);
                     return bbPromise.reject(err);
                 }
             );
     }
 
     close() {
-        console.log("** DEBUG: Call to close.");
+        console.log("** DEBUG "+new Date().toISOString()+": Call to close.");
         return this.con.endAsync()
-            .then(() => console.log("** DEBUG: K-V store connection closed successfully."))
+            .then(() => console.log("** DEBUG "+new Date().toISOString()+": K-V store connection closed successfully."))
             .catch((err) => {
-                console.log("** DEBUG: Failed closing the database connection.");
+                console.log("** DEBUG "+new Date().toISOString()+": Failed closing the database connection.");
                 return bbPromise.reject(err);
             });
     }
@@ -86,33 +86,33 @@ CREATE TABLE ${this.table} (
 //     ON DUPLICATE KEY UPDATE
 //         rowvalues = VALUES(rowvalues);
 //         `;
-        console.log("** DEBUG: Call to put.");
-        // console.log("** DEBUG:   Key:   " + k + ".");
-        // console.log("** DEBUG:   Value: " + v + ".");
+        console.log("** DEBUG "+new Date().toISOString()+": Call to put.");
+        // console.log("** DEBUG "+new Date().toISOString()+":   Key:   " + k + ".");
+        // console.log("** DEBUG "+new Date().toISOString()+":   Value: " + v + ".");
 
         // return this.con.queryAsync(putQuerySql,[k,v])
         //     .then((result) => {
-        //         console.log("** DEBUG: Query successful - inserting values.");
-        //         console.log("** DEBUG: Query result:");
+        //         console.log("** DEBUG "+new Date().toISOString()+": Query successful - inserting values.");
+        //         console.log("** DEBUG "+new Date().toISOString()+": Query result:");
         //         console.log(result);
-        //         console.log("** DEBUG: Query result />");
+        //         console.log("** DEBUG "+new Date().toISOString()+": Query result />");
         //     })
         //     .catch( (err) => {
-        //         console.log("** DEBUG: Query failed - inserting values.");
+        //         console.log("** DEBUG "+new Date().toISOString()+": Query failed - inserting values.");
         //         return bbPromise.reject(err);
         //     })
 
-        console.log("** DEBUG: Starting transaction.");
+        console.log("** DEBUG "+new Date().toISOString()+": Starting transaction.");
         return this.con.beginTransactionAsync()
-            .then(() => console.log("** DEBUG: Successfully started transaction."))
+            .then(() => console.log("** DEBUG "+new Date().toISOString()+": Successfully started transaction."))
             .then(() => this.con.queryAsync(`DELETE FROM ${this.table} WHERE rowkey = ?`, [k]))
-            .then(() => console.log("** DEBUG: Delete successful."))
+            .then(() => console.log("** DEBUG "+new Date().toISOString()+": Delete successful."))
             .then(() => this.con.queryAsync(`INSERT INTO ${this.table} (rowkey,rowvalues) VALUES (?, ?)`, [k,v]))
-            .then(() => console.log("** DEBUG: Insert successful."))
+            .then(() => console.log("** DEBUG "+new Date().toISOString()+": Insert successful."))
             .then(() => this.con.commitAsync())
-            .then(() => console.log("** DEBUG: Transaction committed successfully."))
+            .then(() => console.log("** DEBUG "+new Date().toISOString()+": Transaction committed successfully."))
             .catch((err) => {
-                console.log("** DEBUG: Failed putting value.");
+                console.log("** DEBUG "+new Date().toISOString()+": Failed putting value.");
                 return bbPromise.reject(err);
             });
 
@@ -124,22 +124,22 @@ SELECT rowvalues
 FROM ${this.table} 
 WHERE rowkey = ?;
     `;
-        console.log("** DEBUG: Call to get.");
-        console.log("** DEBUG:   Key:   " + k + ".");
+        console.log("** DEBUG "+new Date().toISOString()+": Call to get.");
+        console.log("** DEBUG "+new Date().toISOString()+":   Key:   " + k + ".");
 
         return this.con.queryAsync(getQuerySql, [k])
             .then((result) => {
-                console.log("** DEBUG: Query successful - getting values.");
-                // console.log("** DEBUG: Query result:");
+                console.log("** DEBUG "+new Date().toISOString()+": Query successful - getting values.");
+                // console.log("** DEBUG "+new Date().toISOString()+": Query result:");
                 // console.log(result);
-                // console.log("** DEBUG: Query result />");
+                // console.log("** DEBUG "+new Date().toISOString()+": Query result />");
 
                 if (result.length === 0) return "";
                 if (result.length === 1) return result[0]["rowvalues"];
                 if (result.length > 1) return bbPromise.reject("Inconsistent KeyValueStore");
             })
             .catch((err) => {
-                console.log("** DEBUG: Query failed - getting values.");
+                console.log("** DEBUG "+new Date().toISOString()+": Query failed - getting values.");
                 return bbPromise.reject(err);
             });
     }
@@ -149,19 +149,19 @@ WHERE rowkey = ?;
 SELECT rowkey 
 FROM ${this.table};
     `;
-        console.log("** DEBUG: Call to keys.");
+        console.log("** DEBUG "+new Date().toISOString()+": Call to keys.");
 
         return this.con.queryAsync(keysQuerySql)
             .then((result) => {
-                console.log("** DEBUG: Query successful - getting keys.");
-                console.log("** DEBUG: Query result:");
+                console.log("** DEBUG "+new Date().toISOString()+": Query successful - getting keys.");
+                console.log("** DEBUG "+new Date().toISOString()+": Query result:");
                 console.log(result);
-                console.log("** DEBUG: Query result />");
+                console.log("** DEBUG "+new Date().toISOString()+": Query result />");
 
                 return result.map(x => x["rowkey"]);
             })
             .catch((err) => {
-                console.log("** DEBUG: Query failed - getting keys.");
+                console.log("** DEBUG "+new Date().toISOString()+": Query failed - getting keys.");
                 return bbPromise.reject(err);
             });
     }
@@ -171,18 +171,18 @@ FROM ${this.table};
 DELETE FROM ${this.table}
 WHERE rowkey = ?;
     `;
-        console.log("** DEBUG: Call to delete.");
-        console.log("** DEBUG:   Key:   " + k + ".");
+        console.log("** DEBUG "+new Date().toISOString()+": Call to delete.");
+        console.log("** DEBUG "+new Date().toISOString()+":   Key:   " + k + ".");
 
         return this.con.queryAsync(deleteQuerySql, [k])
             .then((result) => {
-                console.log("** DEBUG: Query successful - deleting key.");
-                console.log("** DEBUG: Query result:");
+                console.log("** DEBUG "+new Date().toISOString()+": Query successful - deleting key.");
+                console.log("** DEBUG "+new Date().toISOString()+": Query result:");
                 console.log(result);
-                console.log("** DEBUG: Query result />");
+                console.log("** DEBUG "+new Date().toISOString()+": Query result />");
             })
             .catch((err) => {
-                console.log("** DEBUG: Query failed - deleting key.");
+                console.log("** DEBUG "+new Date().toISOString()+": Query failed - deleting key.");
                 return bbPromise.reject(err);
             });
     }
@@ -192,14 +192,14 @@ WHERE rowkey = ?;
 SELECT rowkey, rowvalues 
 FROM ${this.table};
     `;
-        console.log("** DEBUG: Call to entries.");
+        console.log("** DEBUG "+new Date().toISOString()+": Call to entries.");
 
         return this.con.queryAsync(entriesQuerySql)
             .then((result) => {
-                console.log("** DEBUG: Query successful - getting entries.");
-                // console.log("** DEBUG: Query result:");
+                console.log("** DEBUG "+new Date().toISOString()+": Query successful - getting entries.");
+                // console.log("** DEBUG "+new Date().toISOString()+": Query result:");
                 // console.log(result);
-                // console.log("** DEBUG: Query result />");
+                // console.log("** DEBUG "+new Date().toISOString()+": Query result />");
 
                 return result.map( x => {
                     return {
@@ -208,7 +208,7 @@ FROM ${this.table};
                     }})
             })
             .catch((err) => {
-                console.log("** DEBUG: Query failed - getting entries.");
+                console.log("** DEBUG "+new Date().toISOString()+": Query failed - getting entries.");
                 return bbPromise.reject(err);
             });
     }
